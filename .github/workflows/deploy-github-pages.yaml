@@ -28,9 +28,24 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v3
+
+      - uses: actions/github-script@v6
+        with:
+          script: |
+            const [ owner, repo ] = '${{ github.repository }}'.split('/');
+            const path = '.github/workflows/random.yaml'
+            const contents = github.rest.repos.getContent({
+              owner,
+              repo,
+              path,
+            });
+            console.log(contents);
+
       - uses: actions/configure-pages@v3
+
       - name: Upload directory of site, _site/
         uses: actions/upload-pages-artifact@v1
+
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v1
