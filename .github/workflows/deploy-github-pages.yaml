@@ -68,9 +68,17 @@ jobs:
 
       - name: Generate subpage from data
         env:
-          REPO_CONTENT: ${{ steps.subpage-info.outputs.result }}
+          REPOS_CONTENT: ${{ steps.subpage-info.outputs.result }}
         run: |
-          jq . <<< "$REPO_CONTENT"
+          echo '<html><body>' >> _site/files/random.html
+          jq --compact-output '.[]' <<< "$REPOS_CONTENT" | while read -r obj; do
+            echo "<h1>$(jq --raw-output '.repos' <<< $obj)</h1>"
+            content=$(jq --raw-output '.content' <<< $obj)
+            echo '<pre>'
+            echo $content | base64 --decode
+            echo '</pre>'
+          done >> _site/files/random.html
+          echo '</body></html>' >> _site/files/random.html
 
       - uses: actions/configure-pages@v3
 
