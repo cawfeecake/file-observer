@@ -1,0 +1,5 @@
+- path: .github/workflows/random.yaml
+  repos:
+    - test-repo-file-observer-0
+    - test-repo-file-observer-1
+    - test-repo-file-observer-2
