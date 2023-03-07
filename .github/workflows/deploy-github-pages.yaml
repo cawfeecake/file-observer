@@ -72,7 +72,7 @@ jobs:
         run: |
           echo '<html><body>' >> _site/random.html
           jq --compact-output '.[]' <<< "$REPOS_CONTENT" | while read -r obj; do
-            echo "<pre><h1>$(jq --raw-output '.repos' <<< $obj)</h1></pre>"
+            echo "<pre><h1>$(jq --raw-output --compact-output '.repos' <<< $obj)</h1></pre>"
             content=$(jq --raw-output '.content' <<< $obj)
             echo '<pre>'
             echo -n "$content" | base64 --decode
