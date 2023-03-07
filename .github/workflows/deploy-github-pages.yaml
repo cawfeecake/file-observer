@@ -31,23 +31,44 @@ jobs:
 
       - id: parsing
         run: |
-          echo "files=$(yq -o json '.[0].repos' files.yaml | jq . --compact-output)" | tee -a $GITHUB_OUTPUT
+          echo "repos=$(yq -o json '.[0].repos' files.yaml | jq . --compact-output)" | tee -a $GITHUB_OUTPUT
 
       - uses: actions/github-script@v6
+        id: subpage-info
         with:
           script: |
             const owner = '${{ github.repository_owner }}'
-            const repo = 'test-repo-file-observer-0'
             const path = '.github/workflows/random.yaml'
-            const contents = await github.rest.repos.getContent({
-              owner,
-              repo,
-              path,
-            });
-            console.log(contents);
+            const repos = ${{ steps.parsing.outputs.repos }}
+            const repoContent = []
+            for (repo of repos) {
+              const content = await github.rest.repos.getContent({
+                owner,
+                repo,
+                path,
+              })
+              repoContent.push({content: content.data.content, repo: repo})
+            }
 
-            const arr = ${{ steps.parsing.outputs.files }}
-            console.log(arr);
+            const reduced = repoContent.reduce((acc, curr) => {
+              return acc[curr.content] ? acc[curr.content].push(curr.repo) : acc[curr.content] = [curr.repo], acc
+            }, {})
+
+            const reducedList = []
+            for (content of Object.keys(reduced)) {
+              const obj = {content: content, repos: reduced[content]}
+              reducedList.push(obj)
+            }
+
+            return reducedList.sort((a, b) => b.repos.length - a.repos.length)
+          result-encoding: string
+
+
+      - name: Generate subpage from data
+        env:
+          REPO_CONTENT: ${{ steps.subpage-info.outputs.result }}
+        run: |
+          jq . <<< "$REPO_CONTENT"
 
       - uses: actions/configure-pages@v3
 
