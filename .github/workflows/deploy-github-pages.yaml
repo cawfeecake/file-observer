@@ -60,13 +60,15 @@ jobs:
               reducedList.push(obj)
             }
 
-            return reducedList.sort((a, b) => b.repos.length - a.repos.length)
+            return JSON.stringify(
+              reducedList.sort((a, b) => b.repos.length - a.repos.length)
+            )
           result-encoding: string
 
 
       - name: Generate subpage from data
         env:
-          REPO_CONTENT: ${{ toJson(steps.subpage-info.outputs.result) }}
+          REPO_CONTENT: ${{ steps.subpage-info.outputs.result }}
         run: |
           jq . <<< "$REPO_CONTENT"
 
