@@ -29,10 +29,15 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - id: parsing
+        run: |
+          echo "files=$(yq -o json '.[0].repos' files.yaml | jq . --compact-output)" | tee -a $GITHUB_OUTPUT
+
       - uses: actions/github-script@v6
         with:
           script: |
-            const [ owner, repo ] = '${{ github.repository }}'.split('/');
+            const owner = '${{ github.repository_owner }}'
+            const repo = 'test-repo-file-observer-0'
             const path = '.github/workflows/random.yaml'
             const contents = github.rest.repos.getContent({
               owner,
@@ -40,6 +45,9 @@ jobs:
               path,
             });
             console.log(contents);
+
+            const arr = ${{ fromJson(steps.parsing.outputs.files) }}
+            console.log(arr);
 
       - uses: actions/configure-pages@v3
 
