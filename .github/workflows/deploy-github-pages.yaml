@@ -76,7 +76,7 @@ jobs:
             content=$(jq --raw-output '.content' <<< $obj)
             echo '<pre>'
             echo -n "$content" | base64 --decode
-            echo '</pre>'
+            echo '</pre><hr />'
           done >> _site/random.html
           echo '</body></html>' >> _site/random.html
 
