@@ -23,11 +23,22 @@ concurrency:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v3
+
+      - name: Create _site directory, the upload directory
+        run: mkdir _site
+
+      - name: Copy files to upload directory
+        run: |
+          cp index.html _site/index.html
+          cp styles.css _site/styles.css
 
       - id: parsing
         run: |
