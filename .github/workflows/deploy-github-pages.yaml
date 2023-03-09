@@ -32,14 +32,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Create _site directory, the upload directory
-        run: mkdir _site
-
-      - name: Copy files to upload directory
-        run: |
-          cp index.html _site/index.html
-          cp styles.css _site/styles.css
-
       - id: parsing
         run: |
           echo "repos=$(yq -o json '.[0].repos' files.yaml | jq . --compact-output)" | tee -a $GITHUB_OUTPUT
@@ -72,25 +64,21 @@ jobs:
             }
 
             return JSON.stringify(
-              reducedList.sort((a, b) => b.repos.length - a.repos.length)
+              { items: reducedList.sort((a, b) => b.repos.length - a.repos.length) }
             )
           result-encoding: string
 
-
-      - name: Generate subpage from data
+      - name: Call "make build" target
         env:
           REPOS_CONTENT: ${{ steps.subpage-info.outputs.result }}
         run: |
-          echo '<html><head><link rel="stylesheet" href="./styles.css"></head><body>' \
-            >> _site/random.html
-          jq --compact-output '.[]' <<< "$REPOS_CONTENT" | while read -r obj; do
-            echo "<pre><h1>$(jq --raw-output --compact-output '.repos' <<< $obj)</h1></pre>"
-            content=$(jq --raw-output '.content' <<< $obj)
-            echo '<div class="file-code"><pre>'
-            echo -n "$content" | base64 --decode
-            echo '</pre></div><hr />'
-          done >> _site/random.html
-          echo '</body></html>' >> _site/random.html
+          echo "$REPOS_CONTENT" > template_data.json
+          echo '::group::[debug] template_data.json'
+          jq . template_data.json
+          echo '::endgroup::'
+
+          sudo gem install mustache
+          make build
 
       - uses: actions/configure-pages@v3
 
