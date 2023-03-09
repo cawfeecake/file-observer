@@ -9,6 +9,7 @@ file = File.read("./#{ARGV[0]}")
 template_hash = JSON.parse(file)
 
 # decode the base64 file content
+require 'base64'
 items_decoded = template_hash['items'].map { |item| { content: Base64.decode64(item['content']), repos: item['repos'] } }
 
 template_hash['items'] = items_decoded
