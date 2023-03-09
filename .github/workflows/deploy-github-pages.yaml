@@ -50,6 +50,9 @@ jobs:
                 repo,
                 path,
               })
+              core.startGroup('[debug] result from getContent() request')
+              core.debug(content)
+              core.endGroup()
               repoContent.push({content: content.data.content, repo: repo})
             }
 
