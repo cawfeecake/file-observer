@@ -32,62 +32,13 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - id: parsing
-        run: |
-          echo "repos=$(yq -o json '.[0].repos' files.yaml | jq . --compact-output)" | tee -a $GITHUB_OUTPUT
-
-      - uses: actions/github-script@v6
-        id: subpage-info
-        with:
-          script: |
-            const owner = '${{ github.repository_owner }}'
-            const path = '.github/workflows/random.yaml'
-            const repos = ${{ steps.parsing.outputs.repos }}
-            const repoContent = []
-            for (repo of repos) {
-              const content = await github.rest.repos.getContent({
-                owner,
-                repo,
-                path,
-              })
-              core.startGroup('[debug] result from getContent() request')
-              core.debug(content)
-              core.endGroup()
-              repoContent.push({content: content.data.content, repo: repo})
-            }
-
-            const reduced = repoContent.reduce((acc, curr) => {
-              return acc[curr.content] ? acc[curr.content].push(curr.repo) : acc[curr.content] = [curr.repo], acc
-            }, {})
-
-            const reducedList = []
-            for (content of Object.keys(reduced)) {
-              const obj = {content: content, repos: reduced[content]}
-              reducedList.push(obj)
-            }
-
-            return JSON.stringify(
-              { items: reducedList.sort((a, b) => b.repos.length - a.repos.length) }
-            )
-          result-encoding: string
-
-      - name: Call "make build" target
-        env:
-          REPOS_CONTENT: ${{ steps.subpage-info.outputs.result }}
-        run: |
-          echo "$REPOS_CONTENT" > template_data.json
-          echo '::group::[debug] template_data.json'
-          jq . template_data.json
-          echo '::endgroup::'
-
-          sudo gem install mustache
-          make build
+      - run: make build
 
       - uses: actions/configure-pages@v3
 
-      - name: Upload directory of site, _site/
+      - name: Upload site directory
         uses: actions/upload-pages-artifact@v1
+        # defaults to uploading: _site/*
 
       - name: Deploy to GitHub Pages
-        id: deployment
         uses: actions/deploy-pages@v1
