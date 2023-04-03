@@ -34,7 +34,9 @@ jobs:
 
       - uses: actions/setup-node@v3
         with:
-          node-version: latest
+          node-version-file: package.json
+
+      - run: npm ci
 
       - run: make build
 
