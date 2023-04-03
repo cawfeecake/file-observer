@@ -16,7 +16,7 @@
 
 {{#diffs}}
   <hr />
-  <p>{{repos}}</p>
+  <p>{{#repos}}<strong>{{.}}</strong> {{/repos}}</p>
   <hr />
   <div class="file-code"><pre>{{{content}}}</pre></div>
 {{/diffs}}
