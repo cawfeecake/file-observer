@@ -4,7 +4,8 @@ name: Deploy static content to Pages
 on:
   # Runs on pushes targeting the default branch
   push:
-    branches: [ main ]
+    branches:
+      - main
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -39,6 +40,8 @@ jobs:
       - run: npm ci
 
       - run: make build
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
 
       - uses: actions/configure-pages@v3
 
@@ -47,4 +50,5 @@ jobs:
         # defaults to uploading: _site/*
 
       - name: Deploy to GitHub Pages
+        id: deployment
         uses: actions/deploy-pages@v1
