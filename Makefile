@@ -2,10 +2,11 @@ SHELL := /bin/bash
 
 build: clean
 	mkdir -p _site
-	# TODO have index.html ref all htmls for each *file* of *files*
-	# note: order after ./generate_files_html.js call?
-	cp index.html _site/
+	# first, generate index HTML
+	jq '[ .files[].filepath ] | to_entries | map({filepath: .value, index: .key}) | { files: . }' input-files.json \
+		| mustache - index.html.mustache > _site/index.html
 	cp styles.css _site/
+	# then, generate HTML for diffs of files
 	for i in {0..$(shell jq '.files | length - 1' input-files.json)}; do \
 	  tmp_json=$$(mktemp); \
 	  jq --argjson i "$$i" '.files[$$i]' input-files.json | ./generate_file_diff_json.js > $$tmp_json; \

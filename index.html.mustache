@@ -11,8 +11,9 @@
     Files
   </h1>
   <p>
-    <a href="./diffs_0.html">example.json</a>
-    <a href="./diffs_1.html">nested/example.json</a>
+    {{#files}}
+    <a href="./diffs_{{index}}.html">{{filepath}}</a>
+    {{/files}}
   </p>
 </body>
 
