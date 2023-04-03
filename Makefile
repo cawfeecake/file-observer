@@ -9,8 +9,8 @@ build: clean
 	# then, generate HTML for diffs of files
 	for i in {0..$(shell jq '.files | length - 1' input-files.json)}; do \
 	  tmp_json=$$(mktemp); \
-	  jq --argjson i "$$i" '.files[$$i]' input-files.json | ./generate_file_diff_json.js > $$tmp_json; \
-	  cat $$tmp_json | ./generate_file_diff_html.js > _site/diffs_$$i.html; \
+	  jq --argjson i "$$i" '.files[$$i]' input-files.json | ./generate_file_diffs_json.js > $$tmp_json; \
+	  cat $$tmp_json | ./generate_file_diffs_html.js > _site/diffs_$$i.html; \
 	done;
 .PHONY: build
 
