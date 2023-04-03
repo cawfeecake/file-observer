@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<link rel="stylesheet" href="./styles.css">
+
+</head>
+
+<body>
+
+<h1>{{title}}</h1>
+
+<h2>{{filepath}}</h2>
+
+{{#diffs}}
+  <hr />
+  <p>{{repos}}</p>
+  <hr />
+  <div class="file-code"><pre>{{{content}}}</pre></div>
+{{/diffs}}
+
+</body>
+
+</html>

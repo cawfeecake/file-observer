@@ -1,0 +1,12 @@
+{
+  "files": [
+    {
+      "filepath": "example.json",
+      "repos": ["test-repo-0", "test-repo-1", "test-repo-2", "test-repo-3"]
+    },
+    {
+      "filepath": "nested/example.json",
+      "repos": ["test-repo-0", "test-repo-1", "test-repo-2", "test-repo-3"]
+    }
+  ]
+}

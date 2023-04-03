@@ -1,2 +1,6 @@
+# Makefile generated
 _site/
-template_data.json
+__tmp_*/
+
+# NodeJS specific
+node_modules/
