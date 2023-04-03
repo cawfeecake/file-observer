@@ -4,6 +4,8 @@ const { execSync } = require('child_process')
 const { mkdtempSync, readFileSync, writeFileSync } = require('fs')
 const { basename } = require('path')
 
+const AnsiConverter = require('ansi-to-html')
+
 
 // usage: takes in JSON with the following properties:
 // - "filepath": the path to a file relative to a repository's root
@@ -26,9 +28,6 @@ uniqRepos.map(repoName => {
 })
 
 // at this point, we have done all necessary calls to GitHub (w/o double requests)
-
-const AnsiConverter = require('ansi-to-html')
-
 
 const ansiConverter = new AnsiConverter()
 const tmpDir = mkdtempSync(`__tmp_${basename(__filename)}`)
