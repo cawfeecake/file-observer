@@ -10,16 +10,26 @@
 
 <body>
 
+<script src="./scripts.js"></script>
+
 <h1>{{title}}</h1>
 
 <h2>{{filepath}}</h2>
 
-{{#diffs}}
-  <hr />
-  <p>{{#repos}}<strong>{{.}}</strong> {{/repos}}</p>
-  <hr />
-  <div class="file-code"><pre>{{{content}}}</pre></div>
-{{/diffs}}
+<div class="row">
+  <div class="column" id="colLeft">
+  {{#diffs}}
+    <hr />
+    <p onclick="codeClicked(this)" _code_id="{{ repos.0 }}">{{#repos}}<strong>{{.}}</strong> {{/repos}}</p>
+  {{/diffs}}
+  </div>
+
+  <div class="column" id="colRight">
+  {{#diffs}}
+    <div class="fileCode" id="{{ repos.0 }}" hidden><pre>{{{content}}}</pre></div>
+  {{/diffs}}
+  </div>
+</div>
 
 </body>
 

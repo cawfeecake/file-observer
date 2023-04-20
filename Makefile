@@ -13,6 +13,8 @@ build: clean
 	      | jq --argjson defaults "$$(< input-template.json)" '$$defaults * .' \
 	      | npx mustache - templates/diffs.html.mustache > _site/diffs_$$i.html; \
 	done;
+	# then, add JS logic
+	cp scripts.js _site/
 .PHONY: build
 
 clean:
